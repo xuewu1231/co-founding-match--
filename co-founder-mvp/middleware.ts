@@ -10,6 +10,16 @@ const authRoutes = ['/login', '/register']
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
+  // 检查是否为Mock模式
+  const isMockMode = process.env.NEXT_PUBLIC_MOCK_MODE === 'true'
+
+  // Mock模式：跳过所有认证检查
+  if (isMockMode) {
+    console.log('🎭 Mock Mode: 中间件跳过认证检查')
+    return NextResponse.next()
+  }
+
+  // 真实模式：正常的认证检查
   // 创建响应对象
   let response = NextResponse.next({
     request: {

@@ -6,7 +6,8 @@ import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import { signUp } from '@/lib/auth-helpers'
+import { signUp } from '@/lib/auth-service'
+import { MOCK_MODE } from '@/lib/mock-data'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -54,7 +55,13 @@ export default function RegisterPage() {
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold">创建账号</CardTitle>
         <CardDescription>
-          输入您的邮箱来创建账号
+          {MOCK_MODE ? (
+            <span className="text-yellow-700">
+              🎭 Mock模式：输入任意邮箱密码即可注册
+            </span>
+          ) : (
+            '输入您的邮箱来创建账号'
+          )}
         </CardDescription>
       </CardHeader>
       <CardContent>

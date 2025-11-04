@@ -1,190 +1,102 @@
-import { createClient } from '@/lib/supabase/server'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import type { Tag } from '@/types/database.types'
+'use client'
 
-export default async function TestPage() {
-  const supabase = await createClient()
+import { useEffect, useState } from 'react'
+import { MOCK_MODE, MOCK_USER, MOCK_PROFILES } from '@/lib/mock-data'
+import { getAllProfiles } from '@/lib/data-service'
 
-  // 测试1: 获取所有标签
-  const { data: tags, error: tagsError } = await supabase
-    .from('tags')
-    .select('*')
-    .order('category, name')
+export default function TestPage() {
+  const [profiles, setProfiles] = useState<any[]>([])
+  const [error, setError] = useState<string>('')
 
-  // 测试2: 获取标签统计
-  const { data: tagStats, error: statsError } = await supabase
-    .from('tags')
-    .select('category')
-    .eq('is_system', true)
+  useEffect(() => {
+    console.log('=== 测试开始 ===')
+    console.log('1. MOCK_MODE:', MOCK_MODE)
+    console.log('2. MOCK_USER:', MOCK_USER)
+    console.log('3. MOCK_PROFILES 数量:', MOCK_PROFILES.length)
+    console.log('4. MOCK_PROFILES:', MOCK_PROFILES)
 
-  // 计算各类别标签数量
-  const categoryCounts = tagStats?.reduce((acc, tag) => {
-    acc[tag.category] = (acc[tag.category] || 0) + 1
-    return acc
-  }, {} as Record<string, number>) || {}
+    // 测试加载
+    loadData()
+  }, [])
 
-  if (tagsError || statsError) {
-    return (
-      <div className="min-h-screen p-8 bg-red-50">
-        <div className="max-w-4xl mx-auto">
-          <Card className="border-red-200">
-            <CardHeader>
-              <CardTitle className="text-red-800">❌ 数据库连接失败</CardTitle>
-              <CardDescription className="text-red-600">
-                请检查Supabase配置和网络连接
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2 text-sm">
-                <p><strong>标签错误:</strong> {tagsError?.message || '无'}</p>
-                <p><strong>统计错误:</strong> {statsError?.message || '无'}</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    )
+  const loadData = async () => {
+    try {
+      console.log('5. 开始调用 getAllProfiles()')
+      const data = await getAllProfiles()
+      console.log('6. getAllProfiles() 返回:', data)
+      console.log('7. 返回数据数量:', data.length)
+      setProfiles(data)
+    } catch (err: any) {
+      console.error('8. 错误:', err)
+      setError(err.message)
+    }
   }
 
-  // 按类别分组标签
-  const tagsByCategory = tags?.reduce((acc, tag) => {
-    if (!acc[tag.category]) acc[tag.category] = []
-    acc[tag.category].push(tag)
-    return acc
-  }, {} as Record<string, Tag[]>) || {}
-
   return (
-    <div className="min-h-screen p-8 bg-green-50">
-      <div className="max-w-6xl mx-auto space-y-8">
-        {/* 成功提示 */}
-        <Card className="border-green-200 bg-green-50">
-          <CardHeader>
-            <CardTitle className="text-green-800 flex items-center gap-2">
-              ✅ 数据库连接成功！
-            </CardTitle>
-            <CardDescription className="text-green-700">
-              恭喜！你的Co-founder Matching数据库已经正常工作了
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-white rounded-lg">
-                <div className="text-2xl font-bold text-blue-600">{tags?.length || 0}</div>
-                <div className="text-sm text-gray-600">总标签数</div>
-              </div>
-              <div className="text-center p-4 bg-white rounded-lg">
-                <div className="text-2xl font-bold text-purple-600">{categoryCounts.ability || 0}</div>
-                <div className="text-sm text-gray-600">能力标签</div>
-              </div>
-              <div className="text-center p-4 bg-white rounded-lg">
-                <div className="text-2xl font-bold text-orange-600">{categoryCounts.direction || 0}</div>
-                <div className="text-sm text-gray-600">方向标签</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+    <div className="max-w-4xl mx-auto p-8">
+      <h1 className="text-2xl font-bold mb-6">Mock模式测试页面</h1>
 
-        {/* 系统标签展示 */}
-        <div className="space-y-6">
-          {Object.entries(tagsByCategory).map(([category, categoryTags]) => (
-            <Card key={category}>
-              <CardHeader>
-                <CardTitle className="capitalize">
-                  {category === 'ability' && '💪 能力标签'}
-                  {category === 'direction' && '🎯 方向标签'}
-                  {category === 'role' && '👥 角色标签'}
-                  <span className="ml-2 text-sm font-normal text-gray-500">
-                    ({categoryTags.length}个)
-                  </span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {categoryTags.map((tag) => (
-                    <Badge
-                      key={tag.id}
-                      variant={tag.is_system ? 'default' : 'secondary'}
-                      className="text-sm"
-                    >
-                      {tag.name}
-                      {tag.usage_count > 0 && (
-                        <span className="ml-1 text-xs opacity-60">
-                          ({tag.usage_count})
-                        </span>
-                      )}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+      {/* 环境信息 */}
+      <div className="bg-blue-50 p-4 rounded mb-4">
+        <h2 className="font-bold mb-2">环境信息</h2>
+        <div className="text-sm space-y-1">
+          <div>MOCK_MODE: <strong>{String(MOCK_MODE)}</strong></div>
+          <div>环境变量: <strong>{process.env.NEXT_PUBLIC_MOCK_MODE}</strong></div>
         </div>
+      </div>
 
-        {/* 技术信息 */}
-        <Card>
-          <CardHeader>
-            <CardTitle>🔧 技术信息</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-              <div>
-                <strong>数据库类型:</strong> PostgreSQL (Supabase)
-              </div>
-              <div>
-                <strong>前端框架:</strong> Next.js 16 + TypeScript
-              </div>
-              <div>
-                <strong>UI组件:</strong> shadcn/ui + Tailwind CSS
-              </div>
-              <div>
-                <strong>数据表:</strong> 5张表 (profiles, tags, user_tags, interests, connections)
-              </div>
-              <div>
-                <strong>认证系统:</strong> Supabase Auth (已配置)
-              </div>
-              <div>
-                <strong>类型安全:</strong> 完整的TypeScript类型定义
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Mock数据 */}
+      <div className="bg-green-50 p-4 rounded mb-4">
+        <h2 className="font-bold mb-2">Mock数据</h2>
+        <div className="text-sm space-y-1">
+          <div>MOCK_USER: {MOCK_USER ? '✅ 存在' : '❌ 不存在'}</div>
+          <div>MOCK_PROFILES 数量: <strong>{MOCK_PROFILES.length}</strong></div>
+        </div>
+      </div>
 
-        {/* 下一步指导 */}
-        <Card className="border-blue-200 bg-blue-50">
-          <CardHeader>
-            <CardTitle className="text-blue-800">🚀 恭喜完成Day 1！</CardTitle>
-            <CardDescription className="text-blue-700">
-              你的Co-founder Matching MVP基础设施已经搭建完成
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="text-sm">
-                <strong>今天完成的工作:</strong>
-                <ul className="list-disc list-inside mt-2 space-y-1 text-gray-700">
-                  <li>✅ Next.js 16项目创建成功</li>
-                  <li>✅ shadcn/ui组件库配置完成</li>
-                  <li>✅ Supabase数据库连接成功</li>
-                  <li>✅ 5张核心数据表创建完成</li>
-                  <li>✅ 25个系统标签数据插入成功</li>
-                  <li>✅ TypeScript类型定义生成完成</li>
-                  <li>✅ 数据库连接测试通过</li>
-                </ul>
+      {/* 加载的数据 */}
+      <div className="bg-yellow-50 p-4 rounded mb-4">
+        <h2 className="font-bold mb-2">getAllProfiles() 返回的数据</h2>
+        {error ? (
+          <div className="text-red-600">错误: {error}</div>
+        ) : (
+          <div className="text-sm space-y-2">
+            <div>数据数量: <strong>{profiles.length}</strong></div>
+            {profiles.length > 0 ? (
+              <div className="space-y-2">
+                {profiles.map((p, i) => (
+                  <div key={i} className="border p-2 rounded bg-white">
+                    <div><strong>{p.title}</strong></div>
+                    <div className="text-xs text-gray-600">{p.bio}</div>
+                  </div>
+                ))}
               </div>
+            ) : (
+              <div className="text-gray-500">暂无数据</div>
+            )}
+          </div>
+        )}
+      </div>
 
-              <div className="text-sm">
-                <strong>明天Day 2计划:</strong>
-                <ul className="list-disc list-inside mt-2 space-y-1 text-gray-700">
-                  <li>🔐 用户注册和登录功能</li>
-                  <li>🎨 创建导航栏组件</li>
-                  <li>🔒 路由保护（未登录自动跳转）</li>
-                  <li>📄 基础页面布局</li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      {/* 操作按钮 */}
+      <div className="space-x-2">
+        <button
+          onClick={loadData}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          重新加载数据
+        </button>
+        <button
+          onClick={() => console.log('当前 profiles:', profiles)}
+          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+        >
+          打印到控制台
+        </button>
+      </div>
+
+      {/* 控制台提示 */}
+      <div className="mt-4 text-sm text-gray-600">
+        💡 提示：打开浏览器控制台（F12）查看详细日志
       </div>
     </div>
   )
