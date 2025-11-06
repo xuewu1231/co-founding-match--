@@ -51,19 +51,20 @@ export default function RegisterPage() {
   }
 
   return (
-    <Card>
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold">创建账号</CardTitle>
-        <CardDescription>
-          {MOCK_MODE ? (
-            <span className="text-yellow-700">
-              🎭 Mock模式：输入任意邮箱密码即可注册
-            </span>
-          ) : (
-            '输入您的邮箱来创建账号'
-          )}
-        </CardDescription>
-      </CardHeader>
+    <div className="min-h-screen flex items-center justify-center bg-brand-light/30 px-4">
+      <Card className="w-full max-w-md border-brand-light shadow-lg">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold text-brand-dark">创建账号</CardTitle>
+          <CardDescription>
+            {MOCK_MODE ? (
+              <span className="text-brand-secondary font-medium">
+                🎭 Mock模式：输入任意邮箱密码即可注册
+              </span>
+            ) : (
+              '输入您的邮箱来创建账号'
+            )}
+          </CardDescription>
+        </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* 邮箱 */}
@@ -121,7 +122,7 @@ export default function RegisterPage() {
           {/* 提交按钮 */}
           <Button
             type="submit"
-            className="w-full"
+            className="w-full bg-brand-primary hover:bg-brand-dark text-white transition-colors"
             disabled={isLoading}
           >
             {isLoading ? '注册中...' : '注册'}
@@ -131,11 +132,12 @@ export default function RegisterPage() {
       <CardFooter>
         <p className="text-sm text-gray-600 text-center w-full">
           已有账号？{' '}
-          <Link href="/login" className="text-blue-600 hover:underline">
+          <Link href="/login" className="text-brand-primary hover:text-brand-dark hover:underline font-medium">
             立即登录
           </Link>
         </p>
       </CardFooter>
-    </Card>
+      </Card>
+    </div>
   )
 }

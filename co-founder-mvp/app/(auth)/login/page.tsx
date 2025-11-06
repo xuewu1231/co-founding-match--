@@ -68,24 +68,25 @@ export default function LoginPage() {
   }
 
   return (
-    <Card>
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold">登录</CardTitle>
-        <CardDescription>
-          {MOCK_MODE ? (
-            <span className="text-yellow-700">
-              🎭 Mock模式：输入任意邮箱密码即可登录
-            </span>
-          ) : (
-            '输入您的邮箱和密码来登录账号'
-          )}
-        </CardDescription>
-        {/* 调试信息 */}
-        <div className="text-xs text-gray-500 mt-2">
-          当前模式: {MOCK_MODE ? '🎭 Mock' : '🔒 真实'} |
-          ENV: {process.env.NEXT_PUBLIC_MOCK_MODE || 'undefined'}
-        </div>
-      </CardHeader>
+    <div className="min-h-screen flex items-center justify-center bg-brand-light/30 px-4">
+      <Card className="w-full max-w-md border-brand-light shadow-lg">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold text-brand-dark">登录</CardTitle>
+          <CardDescription>
+            {MOCK_MODE ? (
+              <span className="text-brand-secondary font-medium">
+                🎭 Mock模式：输入任意邮箱密码即可登录
+              </span>
+            ) : (
+              '输入您的邮箱和密码来登录账号'
+            )}
+          </CardDescription>
+          {/* 调试信息 */}
+          <div className="text-xs text-gray-500 mt-2">
+            当前模式: {MOCK_MODE ? '🎭 Mock' : '🔒 真实'} |
+            ENV: {process.env.NEXT_PUBLIC_MOCK_MODE || 'undefined'}
+          </div>
+        </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* 邮箱 */}
@@ -137,7 +138,7 @@ export default function LoginPage() {
           {/* 提交按钮 */}
           <Button
             type="submit"
-            className="w-full"
+            className="w-full bg-brand-primary hover:bg-brand-dark text-white transition-colors"
             disabled={isLoading}
           >
             {isLoading ? '登录中...' : '登录'}
@@ -147,14 +148,15 @@ export default function LoginPage() {
       <CardFooter className="flex-col space-y-2">
         <p className="text-sm text-gray-600 text-center w-full">
           还没有账号？{' '}
-          <Link href="/register" className="text-blue-600 hover:underline">
+          <Link href="/register" className="text-brand-primary hover:text-brand-dark hover:underline font-medium">
             立即注册
           </Link>
         </p>
-        <Link href="/debug" className="text-xs text-blue-500 hover:underline">
+        <Link href="/debug" className="text-xs text-brand-secondary hover:underline">
           → 访问调试页面排查问题
         </Link>
       </CardFooter>
-    </Card>
+      </Card>
+    </div>
   )
 }
