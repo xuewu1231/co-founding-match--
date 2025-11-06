@@ -166,7 +166,7 @@ export default function MatchingPoolPage() {
   const loadProfiles = async () => {
     setIsLoading(true)
     try {
-      const data = await getAllProfiles() as Profile[]
+      const data = await getAllProfiles() as any[]
       // 添加匹配度
       const withMatch: ProfileWithMatch[] = data.map(profile => ({
         ...profile,

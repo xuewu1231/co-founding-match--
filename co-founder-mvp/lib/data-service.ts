@@ -108,7 +108,7 @@ export async function upsertProfile(profile: Partial<Profile>) {
   const supabase = createClient()
   const { data, error } = await supabase
     .from('profiles')
-    .upsert(profile)
+    .upsert(profile as any)
     .select()
     .single()
 
@@ -144,74 +144,74 @@ export async function getMyConnections(userId: string): Promise<any[]> {
 /**
  * 发起兴趣信号（"我想聊聊"）
  */
-export async function sendInterest(senderId: string, receiverId: string) {
-  if (MOCK_MODE) {
-    console.log('🎭 Mock Mode: 假装发送兴趣信号', { senderId, receiverId })
-    await mockDelay(400)
+// export async function sendInterest(senderId: string, receiverId: string) {
+// if (MOCK_MODE) {
+//   console.log('🎭 Mock Mode: 假装发送兴趣信号', { senderId, receiverId })
+//   await mockDelay(400)
 
-    // 模拟匹配逻辑：随机决定是否匹配成功
-    const isMatch = Math.random() > 0.7
+//   // 模拟匹配逻辑：随机决定是否匹配成功
+//   const isMatch = Math.random() > 0.7
 
-    if (isMatch) {
-      return {
-        success: true,
-        matched: true,
-        message: '匹配成功！你们可以互相看到联系方式了'
-      }
-    } else {
-      return {
-        success: true,
-        matched: false,
-        message: '已发送兴趣，等待对方回应'
-      }
-    }
-  }
+//   if (isMatch) {
+//     return {
+//       success: true,
+//       matched: true,
+//       message: '匹配成功！你们可以互相看到联系方式了'
+//     }
+//   } else {
+//     return {
+//       success: true,
+//       matched: false,
+//       message: '已发送兴趣，等待对方回应'
+//     }
+//   }
+// }
 
-  // 真实模式：调用Supabase
-  const supabase = createClient()
+// // 真实模式：调用Supabase
+// const supabase = createClient()
 
-  // 1. 记录兴趣
-  const { error: insertError } = await supabase
-    .from('interests')
-    .insert({
-      sender_id: senderId,
-      receiver_id: receiverId,
-      status: 'pending'
-    })
+// // 1. 记录兴趣
+// const { error: insertError } = await supabase
+//   .from('interests')
+//   .insert({
+//     sender_id: senderId,
+//     receiver_id: receiverId,
+//     status: 'pending'
+//   })
 
-  if (insertError) return { success: false, error: insertError.message }
+// if (insertError) return { success: false, error: insertError.message }
 
-  // 2. 检查反向兴趣
-  const { data: reverseInterest } = await supabase
-    .from('interests')
-    .select('*')
-    .eq('sender_id', receiverId)
-    .eq('receiver_id', senderId)
-    .eq('status', 'pending')
-    .single()
+// // 2. 检查反向兴趣
+// const { data: reverseInterest } = await supabase
+//   .from('interests')
+//   .select('*')
+//   .eq('sender_id', receiverId)
+//   .eq('receiver_id', senderId)
+//   .eq('status', 'pending')
+//   .single()
 
-  // 3. 如果有反向兴趣，创建连接
-  if (reverseInterest) {
-    const { error: connectionError } = await supabase
-      .from('connections')
-      .insert({
-        user_a_id: Math.min(senderId, receiverId) < senderId ? senderId : receiverId,
-        user_b_id: Math.max(senderId, receiverId) > senderId ? senderId : receiverId,
-        status: 'active'
-      })
+// // 3. 如果有反向兴趣，创建连接
+// if (reverseInterest) {
+//   const { error: connectionError } = await supabase
+//     .from('connections')
+//     .insert({
+//       user_a_id: Math.min(senderId, receiverId) < senderId ? senderId : receiverId,
+//       user_b_id: Math.max(senderId, receiverId) > senderId ? senderId : receiverId,
+//       status: 'active'
+//     })
 
-    if (connectionError) return { success: false, error: connectionError.message }
+//   if (connectionError) return { success: false, error: connectionError.message }
 
-    return {
-      success: true,
-      matched: true,
-      message: '匹配成功！'
-    }
-  }
+//   return {
+//     success: true,
+//     matched: true,
+//     message: '匹配成功！'
+//   }
+// }
 
-  return {
-    success: true,
-    matched: false,
-    message: '已发送兴趣'
-  }
-}
+// return {
+//   success: true,
+//   matched: false,
+//   message: '已发送兴趣'
+// }
+// }

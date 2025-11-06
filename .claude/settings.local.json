@@ -4,7 +4,17 @@
       "Bash(cat:*)",
       "Bash(npx shadcn@latest init -y)",
       "Bash(npm install:*)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Read(//mnt/d/Study/研究生/奇绩创坛/**)",
+      "WebFetch(domain:www.miracleplus.com)",
+      "WebSearch",
+      "Bash(npx shadcn@latest add textarea:*)",
+      "Bash(mkdir:*)",
+      "Bash(pkill:*)",
+      "Bash(npm run build:*)",
+      "Read(//tmp/**)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []

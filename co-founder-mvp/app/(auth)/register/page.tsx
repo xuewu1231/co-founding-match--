@@ -44,7 +44,7 @@ export default function RegisterPage() {
       // 注册成功，跳转到引导页面
       router.push('/onboarding/1')
     } else {
-      setErrorMessage(result.error || '注册失败，请重试')
+      setErrorMessage((result as any).error || '注册失败，请重试')
     }
 
     setIsLoading(false)

@@ -55,8 +55,8 @@ export default function LoginPage() {
         console.log('✅ 登录成功，跳转到名片池')
         router.push('/matching/pool')
       } else {
-        console.log('❌ 登录失败:', result.error)
-        setErrorMessage(result.error || '登录失败，请检查邮箱和密码')
+        console.log('❌ 登录失败:', result.success === false ? (result as any).error : '未知错误')
+        setErrorMessage((result as any).error || '登录失败，请检查邮箱和密码')
       }
     } catch (error) {
       console.error('❌ 登录异常:', error)
